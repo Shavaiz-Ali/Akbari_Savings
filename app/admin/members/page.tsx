@@ -9,6 +9,9 @@ import { CustomAvatar } from "@/components/ui/CustomAvatar"
 import { toast } from "sonner"
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog"
 import { AnimatedSection } from "@/components/ui/AnimatedSection"
+import { PageHeader } from "@/components/ui/PageHeader"
+import { CardTable } from "@/components/ui/CardTable"
+import { EmptyState } from "@/components/ui/EmptyState"
 import {
   Table,
   TableBody,
@@ -83,18 +86,11 @@ export default function AdminMembersPage() {
   }
 
   return (
-    <AnimatedSection className="p-6 lg:p-10 max-w-7xl mx-auto space-y-8">
-      {/* Header */}
-      <AnimatedSection direction="right" delay="100" className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="space-y-1">
-          <h1 className="text-3xl lg:text-4xl font-bold tracking-tight font-serif text-foreground">
-            Members
-          </h1>
-          <p className="text-muted-foreground text-sm">
-            Manage member accounts and approve new signups
-          </p>
-        </div>
-
+    <>
+      <PageHeader 
+        title="Members" 
+        description="Manage member accounts and approve new signups"
+      >
         <Dialog open={addMemberOpen} onOpenChange={setAddMemberOpen}>
           <DialogTrigger asChild>
             <CustomButton className="gap-2 shrink-0">
@@ -149,7 +145,7 @@ export default function AdminMembersPage() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      </AnimatedSection>
+      </PageHeader>
 
       {/* Tabs */}
       <AnimatedSection delay="200" className="flex gap-1 bg-muted/50 p-1 rounded-lg w-fit">
@@ -185,99 +181,84 @@ export default function AdminMembersPage() {
 
       {/* Active Members Table */}
       {activeTab === "active" && (
-        <AnimatedSection delay="300">
-          <CustomCard
-          className="overflow-hidden"
-          body={
-            <div className="-mx-8 -my-8">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-muted/30">
-                    <TableHead className="pl-6">Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Monthly Target</TableHead>
-                    <TableHead>Total Balance</TableHead>
-                    <TableHead>Joined</TableHead>
-                    <TableHead className="pr-6 text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {activeMembers.map((member) => (
-                    <TableRow key={member.id}>
-                      <TableCell className="pl-6">
-                        <div className="flex items-center gap-3">
-                          <CustomAvatar
-                            initials={member.name
-                              .split(" ")
-                              .map((n) => n[0])
-                              .join("")}
-                            size="sm"
-                          />
-                          <span className="font-medium text-foreground">
-                            {member.name}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-muted-foreground">
-                        {member.email}
-                      </TableCell>
-                      <TableCell className="font-semibold text-foreground">
-                        {member.target}
-                      </TableCell>
-                      <TableCell className="font-semibold text-primary">
-                        {member.balance}
-                      </TableCell>
-                      <TableCell className="text-muted-foreground text-xs">
-                        {member.joined}
-                      </TableCell>
-                      <TableCell className="pr-6 text-right">
-                        <div className="flex items-center justify-end gap-1">
-                          <CustomButton
-                            variant="ghost"
-                            size="sm"
-                            className="gap-1 text-xs"
-                          >
-                            <Pencil className="size-3" />
-                            Edit
-                          </CustomButton>
-                          <CustomButton
-                            variant="ghost"
-                            size="sm"
-                            className="gap-1 text-xs text-destructive hover:bg-destructive/10"
-                            onClick={() => handleDeactivate({ id: member.id, name: member.name })}
-                          >
-                            <UserX className="size-3" />
-                            Deactivate
-                          </CustomButton>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          }
-        />
-        </AnimatedSection>
+        <CardTable>
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-muted/30">
+                <TableHead className="pl-6">Name</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Monthly Target</TableHead>
+                <TableHead>Total Balance</TableHead>
+                <TableHead>Joined</TableHead>
+                <TableHead className="pr-6 text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {activeMembers.map((member) => (
+                <TableRow key={member.id}>
+                  <TableCell className="pl-6">
+                    <div className="flex items-center gap-3">
+                      <CustomAvatar
+                        initials={member.name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")}
+                        size="sm"
+                      />
+                      <span className="font-medium text-foreground">
+                        {member.name}
+                      </span>
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {member.email}
+                  </TableCell>
+                  <TableCell className="font-semibold text-foreground">
+                    {member.target}
+                  </TableCell>
+                  <TableCell className="font-semibold text-primary">
+                    {member.balance}
+                  </TableCell>
+                  <TableCell className="text-muted-foreground text-xs">
+                    {member.joined}
+                  </TableCell>
+                  <TableCell className="pr-6 text-right">
+                    <div className="flex items-center justify-end gap-1">
+                      <CustomButton
+                        variant="ghost"
+                        size="sm"
+                        className="gap-1 text-xs"
+                      >
+                        <Pencil className="size-3" />
+                        Edit
+                      </CustomButton>
+                      <CustomButton
+                        variant="ghost"
+                        size="sm"
+                        className="gap-1 text-xs text-destructive hover:bg-destructive/10"
+                        onClick={() => handleDeactivate({ id: member.id, name: member.name })}
+                      >
+                        <UserX className="size-3" />
+                        Deactivate
+                      </CustomButton>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardTable>
       )}
 
       {/* Pending Approval Cards */}
       {activeTab === "pending" && (
         <AnimatedSection delay="300" className="space-y-5">
           {pendingMembers.length === 0 ? (
-            <div className="py-16 flex flex-col items-center justify-center text-center space-y-4 bg-muted/20 border border-dashed border-border rounded-2xl">
-              <div className="size-16 rounded-full bg-muted/50 flex items-center justify-center">
-                <Users className="size-8 text-muted-foreground/30" />
-              </div>
-              <div className="space-y-1">
-                <p className="text-foreground font-semibold">
-                  No pending approvals
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  All signup requests have been reviewed
-                </p>
-              </div>
-            </div>
+            <EmptyState 
+              icon={Users}
+              title="No pending approvals"
+              description="All signup requests have been reviewed"
+            />
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {pendingMembers.map((user) => (
@@ -359,6 +340,6 @@ export default function AdminMembersPage() {
         confirmText="Approve Member"
         variant="success"
       />
-    </AnimatedSection>
+    </>
   )
 }

@@ -5,6 +5,8 @@ import { useSession } from "next-auth/react"
 import { CustomCard } from "@/components/ui/CustomCard"
 import { CustomBadge } from "@/components/ui/CustomBadge"
 import { AnimatedSection } from "@/components/ui/AnimatedSection"
+import { PageHeader } from "@/components/ui/PageHeader"
+import { CardTable } from "@/components/ui/CardTable"
 import {
   Table,
   TableBody,
@@ -17,7 +19,6 @@ import {
   Wallet,
   Calendar,
   Target,
-  ArrowUpRight,
 } from "lucide-react"
 
 // ── Mock Data ──
@@ -40,16 +41,11 @@ export default function MemberDashboardPage() {
   const userName = session?.user?.name || "Member"
 
   return (
-    <AnimatedSection className="p-6 lg:p-10 max-w-7xl mx-auto space-y-10">
-      {/* Header */}
-      <AnimatedSection direction="right" delay="100" className="space-y-1">
-        <h1 className="text-3xl lg:text-4xl font-bold tracking-tight font-serif text-foreground">
-          Welcome back, {userName.split(" ")[0]}
-        </h1>
-        <p className="text-muted-foreground text-sm">
-          Here is an overview of your savings this year
-        </p>
-      </AnimatedSection>
+    <>
+      <PageHeader 
+        title={`Welcome back, ${userName.split(" ")[0]}`}
+        description="Here is an overview of your savings this year"
+      />
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -153,44 +149,39 @@ export default function MemberDashboardPage() {
           </h2>
           <CustomBadge variant="approved">View All History</CustomBadge>
         </div>
-        <CustomCard
-          className="overflow-hidden"
-          body={
-            <div className="-mx-8 -my-8">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-muted/30">
-                    <TableHead className="pl-6">Month</TableHead>
-                    <TableHead>Amount</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="pr-6 text-right">Date</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {recentDeposits.map((dep) => (
-                    <TableRow key={dep.id}>
-                      <TableCell className="pl-6 font-medium text-foreground">
-                        {dep.month}
-                      </TableCell>
-                      <TableCell className="font-semibold text-foreground">
-                        {dep.amount}
-                      </TableCell>
-                      <TableCell>
-                        <CustomBadge variant={dep.status}>
-                          {dep.status}
-                        </CustomBadge>
-                      </TableCell>
-                      <TableCell className="pr-6 text-right text-muted-foreground text-xs">
-                        {dep.date}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          }
-        />
+        <CardTable>
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-muted/30">
+                <TableHead className="pl-6">Month</TableHead>
+                <TableHead>Amount</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="pr-6 text-right">Date</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {recentDeposits.map((dep) => (
+                <TableRow key={dep.id}>
+                  <TableCell className="pl-6 font-medium text-foreground">
+                    {dep.month}
+                  </TableCell>
+                  <TableCell className="font-semibold text-foreground">
+                    {dep.amount}
+                  </TableCell>
+                  <TableCell>
+                    <CustomBadge variant={dep.status}>
+                      {dep.status}
+                    </CustomBadge>
+                  </TableCell>
+                  <TableCell className="pr-6 text-right text-muted-foreground text-xs">
+                    {dep.date}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardTable>
       </AnimatedSection>
-    </AnimatedSection>
+    </>
   )
 }

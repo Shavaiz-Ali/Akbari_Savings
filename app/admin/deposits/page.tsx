@@ -5,6 +5,8 @@ import { CustomCard } from "@/components/ui/CustomCard"
 import { CustomButton } from "@/components/ui/CustomButton"
 import { CustomBadge } from "@/components/ui/CustomBadge"
 import { CustomInput } from "@/components/ui/CustomInput"
+import { PageHeader } from "@/components/ui/PageHeader"
+import { CardTable } from "@/components/ui/CardTable"
 import { toast } from "sonner"
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog"
 import { AnimatedSection } from "@/components/ui/AnimatedSection"
@@ -25,7 +27,6 @@ import {
 } from "@/components/ui/select"
 import {
   Search,
-  Filter,
   Check,
   X,
   ExternalLink,
@@ -78,16 +79,11 @@ export default function AdminDepositsPage() {
   })
 
   return (
-    <AnimatedSection className="p-6 lg:p-10 max-w-7xl mx-auto space-y-8">
-      {/* Header */}
-      <AnimatedSection direction="right" delay="100" className="space-y-1">
-        <h1 className="text-3xl lg:text-4xl font-bold tracking-tight font-serif text-foreground">
-          Deposits
-        </h1>
-        <p className="text-muted-foreground text-sm">
-          Review and manage member deposit submissions
-        </p>
-      </AnimatedSection>
+    <>
+      <PageHeader 
+        title="Deposits" 
+        description="Review and manage member deposit submissions"
+      />
 
       {/* Filters */}
       <AnimatedSection delay="200" className="flex flex-col md:flex-row gap-4 items-end">
@@ -134,100 +130,93 @@ export default function AdminDepositsPage() {
       </AnimatedSection>
 
       {/* Deposits Table */}
-      <AnimatedSection delay="300">
-        <CustomCard
-          className="overflow-hidden"
-          body={
-          <div className="-mx-8 -my-8">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-muted/30">
-                  <TableHead className="pl-6">Member</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Month</TableHead>
-                  <TableHead>Screenshot</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Submitted Date</TableHead>
-                  <TableHead className="pr-6 text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredDeposits.length > 0 ? (
-                  filteredDeposits.map((dep) => (
-                    <TableRow key={dep.id}>
-                      <TableCell className="pl-6 font-medium text-foreground">
-                        {dep.member}
-                      </TableCell>
-                      <TableCell className="font-semibold text-foreground">
-                        {dep.amount}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2 text-muted-foreground text-xs">
-                          <Calendar className="size-3" />
-                          {dep.month}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <a
-                          href={dep.screenshot}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-1.5 text-xs text-primary font-medium hover:underline"
+      <CardTable>
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-muted/30">
+              <TableHead className="pl-6">Member</TableHead>
+              <TableHead>Amount</TableHead>
+              <TableHead>Month</TableHead>
+              <TableHead>Screenshot</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Submitted Date</TableHead>
+              <TableHead className="pr-6 text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredDeposits.length > 0 ? (
+              filteredDeposits.map((dep) => (
+                <TableRow key={dep.id}>
+                  <TableCell className="pl-6 font-medium text-foreground">
+                    {dep.member}
+                  </TableCell>
+                  <TableCell className="font-semibold text-foreground">
+                    {dep.amount}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2 text-muted-foreground text-xs">
+                      <Calendar className="size-3" />
+                      {dep.month}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <a
+                      href={dep.screenshot}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 text-xs text-primary font-medium hover:underline"
+                    >
+                      View
+                      <ExternalLink className="size-3" />
+                    </a>
+                  </TableCell>
+                  <TableCell>
+                    <CustomBadge variant={dep.status}>
+                      {dep.status}
+                    </CustomBadge>
+                  </TableCell>
+                  <TableCell className="text-muted-foreground text-xs">
+                    {dep.date}
+                  </TableCell>
+                  <TableCell className="pr-6 text-right">
+                    {dep.status === "pending" ? (
+                      <div className="flex items-center justify-end gap-2">
+                        <CustomButton 
+                          size="sm" 
+                          className="h-8 px-3 gap-1 shadow-md"
+                          onClick={() => handleApproveClick(dep)}
                         >
-                          View
-                          <ExternalLink className="size-3" />
-                        </a>
-                      </TableCell>
-                      <TableCell>
-                        <CustomBadge variant={dep.status}>
-                          {dep.status}
-                        </CustomBadge>
-                      </TableCell>
-                      <TableCell className="text-muted-foreground text-xs">
-                        {dep.date}
-                      </TableCell>
-                      <TableCell className="pr-6 text-right">
-                        {dep.status === "pending" ? (
-                          <div className="flex items-center justify-end gap-2">
-                            <CustomButton 
-                              size="sm" 
-                              className="h-8 px-3 gap-1 shadow-md"
-                              onClick={() => handleApproveClick(dep)}
-                            >
-                              <Check className="size-3" />
-                              Approve
-                            </CustomButton>
-                            <CustomButton
-                              variant="ghost"
-                              size="sm"
-                              className="h-8 px-3 gap-1 text-destructive hover:bg-destructive/10"
-                              onClick={() => handleRejectClick(dep)}
-                            >
-                              <X className="size-3" />
-                              Reject
-                            </CustomButton>
-                          </div>
-                        ) : (
-                          <span className="text-[10px] uppercase font-bold text-muted-foreground/40 tracking-wider">
-                            Processed
-                          </span>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={7} className="h-32 text-center text-muted-foreground">
-                      No deposits found matching your filters.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        }
-      />
-      </AnimatedSection>
+                          <Check className="size-3" />
+                          Approve
+                        </CustomButton>
+                        <CustomButton
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 px-3 gap-1 text-destructive hover:bg-destructive/10"
+                          onClick={() => handleRejectClick(dep)}
+                        >
+                          <X className="size-3" />
+                          Reject
+                        </CustomButton>
+                      </div>
+                    ) : (
+                      <span className="text-[10px] uppercase font-bold text-muted-foreground/40 tracking-wider">
+                        Processed
+                      </span>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={7} className="h-32 text-center text-muted-foreground">
+                  No deposits found matching your filters.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </CardTable>
 
       {/* Confirmation Dialogs */}
       <ConfirmDialog
@@ -249,6 +238,6 @@ export default function AdminDepositsPage() {
         confirmText="Reject Deposit"
         variant="destructive"
       />
-    </AnimatedSection>
+    </>
   )
 }

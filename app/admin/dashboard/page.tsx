@@ -6,7 +6,8 @@ import { CustomBadge } from "@/components/ui/CustomBadge"
 import { CustomButton } from "@/components/ui/CustomButton"
 import { CustomAvatar } from "@/components/ui/CustomAvatar"
 import { AnimatedSection } from "@/components/ui/AnimatedSection"
-import { cn } from "@/lib/utils"
+import { PageHeader } from "@/components/ui/PageHeader"
+import { CardTable } from "@/components/ui/CardTable"
 import { toast } from "sonner"
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog"
 import {
@@ -63,16 +64,11 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <AnimatedSection className="p-6 lg:p-10 max-w-7xl mx-auto space-y-10">
-      {/* Header */}
-      <AnimatedSection direction="right" delay="100" className="space-y-1">
-        <h1 className="text-3xl lg:text-4xl font-bold tracking-tight font-serif text-foreground">
-          Dashboard
-        </h1>
-        <p className="text-muted-foreground text-sm">
-          Overview of your savings platform
-        </p>
-      </AnimatedSection>
+    <>
+      <PageHeader 
+        title="Dashboard" 
+        description="Overview of your savings platform" 
+      />
 
       {/* Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
@@ -114,47 +110,42 @@ export default function AdminDashboardPage() {
         <h2 className="text-xl font-bold font-serif text-foreground">
           Recent Deposits
         </h2>
-        <CustomCard
-          className="overflow-hidden"
-          body={
-            <div className="-mx-8 -my-8">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-muted/30">
-                    <TableHead className="pl-6">Member</TableHead>
-                    <TableHead>Amount</TableHead>
-                    <TableHead>Month</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="pr-6">Date</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {recentDeposits.map((dep) => (
-                    <TableRow key={dep.id}>
-                      <TableCell className="pl-6 font-medium">
-                        {dep.member}
-                      </TableCell>
-                      <TableCell className="font-semibold text-foreground">
-                        {dep.amount}
-                      </TableCell>
-                      <TableCell className="text-muted-foreground">
-                        {dep.month}
-                      </TableCell>
-                      <TableCell>
-                        <CustomBadge variant={dep.status}>
-                          {dep.status}
-                        </CustomBadge>
-                      </TableCell>
-                      <TableCell className="pr-6 text-muted-foreground">
-                        {dep.date}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          }
-        />
+        <CardTable>
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-muted/30">
+                <TableHead className="pl-6">Member</TableHead>
+                <TableHead>Amount</TableHead>
+                <TableHead>Month</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="pr-6">Date</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {recentDeposits.map((dep) => (
+                <TableRow key={dep.id}>
+                  <TableCell className="pl-6 font-medium">
+                    {dep.member}
+                  </TableCell>
+                  <TableCell className="font-semibold text-foreground">
+                    {dep.amount}
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {dep.month}
+                  </TableCell>
+                  <TableCell>
+                    <CustomBadge variant={dep.status}>
+                      {dep.status}
+                    </CustomBadge>
+                  </TableCell>
+                  <TableCell className="pr-6 text-muted-foreground">
+                    {dep.date}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardTable>
       </AnimatedSection>
 
       {/* Pending Approvals */}
@@ -226,6 +217,6 @@ export default function AdminDashboardPage() {
         confirmText="Approve Member"
         variant="success"
       />
-    </AnimatedSection>
+    </>
   )
 }

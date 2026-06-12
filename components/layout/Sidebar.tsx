@@ -11,11 +11,15 @@ import { CustomBadge } from "@/components/ui/CustomBadge"
 import { SignOutButton } from "./SignOutButton"
 import { Menu, X } from "lucide-react"
 import { ThemeToggle } from "@/components/ui/ThemeToggle"
+import { DashboardHeader } from "./DashboardHeader"
+
+import { AnimatedSection } from "@/components/ui/AnimatedSection"
+import { getIconComponent } from "@/lib/navigation"
 
 export interface NavItem {
   label: string
   href: string
-  icon: React.ReactNode
+  icon: string
   badge?: string
 }
 
@@ -31,24 +35,19 @@ export function Sidebar({ navItems, role, children }: SidebarProps) {
   const [mobileOpen, setMobileOpen] = React.useState(false)
 
   const userName = session?.user?.name || "User"
-  const initials = userName
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .slice(0, 2)
 
   const sidebarContent = (
     <div className="flex flex-col h-full">
       {/* Logo */}
       <div className="px-6 py-6 border-b border-sidebar-border/50 flex items-center justify-between">
         <Logo size="sm" />
-        <ThemeToggle />
       </div>
 
       {/* Nav Links */}
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
         {navItems.map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + "/")
+          const Icon = getIconComponent(item.icon)
           return (
             <Link
               key={item.href}
@@ -62,7 +61,7 @@ export function Sidebar({ navItems, role, children }: SidebarProps) {
               )}
             >
               <span className="flex items-center justify-center size-5">
-                {item.icon}
+                <Icon className="size-5" />
               </span>
               <span className="flex-1">{item.label}</span>
               {item.badge && (
@@ -78,22 +77,8 @@ export function Sidebar({ navItems, role, children }: SidebarProps) {
         })}
       </nav>
 
-      {/* User section */}
-      <div className="px-4 py-4 border-t border-sidebar-border/50 space-y-3">
-        <div className="flex items-center gap-3 px-2">
-          <CustomAvatar initials={initials} size="sm" />
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-sidebar-foreground truncate">
-              {userName}
-            </p>
-            <CustomBadge
-              variant="approved"
-              className="text-[9px] px-1.5 py-0 leading-4 mt-0.5"
-            >
-              {role}
-            </CustomBadge>
-          </div>
-        </div>
+      {/* User section (Simplified) */}
+      <div className="px-4 py-4 border-t border-sidebar-border/50">
         <SignOutButton />
       </div>
     </div>
@@ -133,23 +118,27 @@ export function Sidebar({ navItems, role, children }: SidebarProps) {
 
       {/* Main content */}
       <main className="flex-1 flex flex-col overflow-hidden">
-        {/* Mobile header */}
-        <div className="lg:hidden flex items-center gap-3 px-4 py-3 border-b border-border bg-background">
-          <button
-            onClick={() => setMobileOpen(true)}
-            className="p-2 rounded-lg text-foreground hover:bg-accent transition-colors"
-          >
-            <Menu className="size-5" />
-          </button>
-          <Logo size="sm" />
-          <div className="ml-auto">
-            <ThemeToggle />
+        {/* Unified Header */}
+        <div className="flex flex-col border-b border-border/50 bg-background/50 backdrop-blur-sm relative z-30">
+          <div className="lg:hidden flex items-center gap-3 px-4 py-3">
+            <button
+              onClick={() => setMobileOpen(true)}
+              className="p-2 rounded-lg text-foreground hover:bg-accent transition-colors"
+            >
+              <Menu className="size-5" />
+            </button>
+            <Logo size="sm" />
           </div>
+          <DashboardHeader />
         </div>
 
         {/* Page content */}
-        <div className="flex-1 overflow-y-auto bg-background">
-          {children}
+        <div className="flex-1 overflow-y-auto bg-background p-4 lg:p-6 pb-12">
+          <div className="max-w-screen-2xl mx-auto h-full">
+            <AnimatedSection direction="none" className="space-y-10">
+              {children}
+            </AnimatedSection>
+          </div>
         </div>
       </main>
     </div>

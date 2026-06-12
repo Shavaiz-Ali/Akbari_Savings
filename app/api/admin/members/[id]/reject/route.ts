@@ -11,7 +11,7 @@ async function requireAdmin(): Promise<Session | null> {
   return session
 }
 
-// PATCH /api/admin/members/[id]/approve
+// PATCH /api/admin/members/[id]/reject
 export async function PATCH(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -30,28 +30,12 @@ export async function PATCH(
       return NextResponse.json({ error: 'Member not found' }, { status: 404 })
     }
 
-    if (user.isActive) {
-      return NextResponse.json({ error: 'Account is already active' }, { status: 400 })
-    }
+    // Hard delete — they never had access, no financial data attached
+    await User.findByIdAndDelete(id)
 
-    const updatedUser = await User.findByIdAndUpdate(
-      id,
-      {
-        $set: {
-          isActive: true,
-          approvedBy: session.user.id,
-          approvedAt: new Date(),
-        },
-      },
-      { new: true }
-    ).select('-passwordHash')
-
-    return NextResponse.json({
-      data: updatedUser,
-      message: 'Account approved successfully',
-    })
+    return NextResponse.json({ message: 'Account rejected and removed' })
   } catch (error) {
-    console.error('[PATCH /api/admin/members/[id]/approve]', error)
+    console.error('[PATCH /api/admin/members/[id]/reject]', error)
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
   }
 }

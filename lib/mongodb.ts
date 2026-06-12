@@ -18,14 +18,19 @@ export async function connectDB(): Promise<typeof mongoose> {
         throw new Error('MONGODB_URI is not defined in environment variables')
     }
 
-    if (cached.conn) return cached.conn
+    if (cached.conn) {
+        console.log("Database Connected: Cached connection")
+        return cached.conn
+    }
 
     if (!cached.promise) {
+        console.log("Database Connecting...")
         cached.promise = mongoose.connect(MONGODB_URI, {
             bufferCommands: false,
         })
     }
 
     cached.conn = await cached.promise
+    console.log("Database Connected: new connection")
     return cached.conn
 }

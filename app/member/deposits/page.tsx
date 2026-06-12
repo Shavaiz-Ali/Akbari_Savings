@@ -5,6 +5,8 @@ import { CustomCard } from "@/components/ui/CustomCard"
 import { CustomButton } from "@/components/ui/CustomButton"
 import { CustomBadge } from "@/components/ui/CustomBadge"
 import { CustomInput } from "@/components/ui/CustomInput"
+import { PageHeader } from "@/components/ui/PageHeader"
+import { CardTable } from "@/components/ui/CardTable"
 import { toast } from "sonner"
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog"
 import { AnimatedSection } from "@/components/ui/AnimatedSection"
@@ -37,7 +39,6 @@ import {
   Upload,
   Clock,
   CheckCircle2,
-  AlertCircle,
   FileText,
   Calendar,
 } from "lucide-react"
@@ -68,18 +69,11 @@ export default function MemberDepositsPage() {
   }
 
   return (
-    <AnimatedSection className="p-6 lg:p-10 max-w-7xl mx-auto space-y-10">
-      {/* Header */}
-      <AnimatedSection direction="right" delay="100" className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="space-y-1">
-          <h1 className="text-3xl lg:text-4xl font-bold tracking-tight font-serif text-foreground">
-            My Deposits
-          </h1>
-          <p className="text-muted-foreground text-sm">
-            Manage your monthly savings and submission history
-          </p>
-        </div>
-
+    <>
+      <PageHeader 
+        title="My Deposits" 
+        description="Manage your monthly savings and submission history"
+      >
         <Dialog open={submitOpen} onOpenChange={setSubmitOpen}>
           <DialogTrigger asChild>
             <CustomButton className="gap-2 shrink-0 h-11 px-6 shadow-primary/25 shadow-lg">
@@ -155,7 +149,7 @@ export default function MemberDepositsPage() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      </AnimatedSection>
+      </PageHeader>
 
       {/* Current Month Status Section */}
       <AnimatedSection delay="200">
@@ -197,58 +191,52 @@ export default function MemberDepositsPage() {
              }
            />
         )}
-        {/* If no deposit for current month might show a CTA card */}
       </AnimatedSection>
 
       {/* History Table */}
-      <AnimatedSection delay="300" className="space-y-4">
+      <div className="space-y-4">
         <div className="flex items-center gap-3">
           <h2 className="text-xl font-bold font-serif text-foreground leading-none">
             Deposit History
           </h2>
           <CustomBadge variant="pending">{history.length}</CustomBadge>
         </div>
-        <CustomCard
-          className="overflow-hidden"
-          body={
-            <div className="-mx-8 -my-8">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-muted/30">
-                    <TableHead className="pl-6">Month</TableHead>
-                    <TableHead>Amount</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="pr-6 text-right">Submitted Date</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {history.map((item) => (
-                    <TableRow key={item.id}>
-                      <TableCell className="pl-6">
-                        <div className="flex items-center gap-2 font-medium text-foreground">
-                          <Calendar className="size-4 text-primary/60" />
-                          {item.month}
-                        </div>
-                      </TableCell>
-                      <TableCell className="font-semibold text-foreground">
-                        {item.amount}
-                      </TableCell>
-                      <TableCell>
-                        <CustomBadge variant={item.status}>
-                          {item.status}
-                        </CustomBadge>
-                      </TableCell>
-                      <TableCell className="pr-6 text-right text-muted-foreground text-xs">
-                        {item.date}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          }
-        />
-      </AnimatedSection>
+        <CardTable>
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-muted/30">
+                <TableHead className="pl-6">Month</TableHead>
+                <TableHead>Amount</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="pr-6 text-right">Submitted Date</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {history.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell className="pl-6">
+                    <div className="flex items-center gap-2 font-medium text-foreground">
+                      <Calendar className="size-4 text-primary/60" />
+                      {item.month}
+                    </div>
+                  </TableCell>
+                  <TableCell className="font-semibold text-foreground">
+                    {item.amount}
+                  </TableCell>
+                  <TableCell>
+                    <CustomBadge variant={item.status}>
+                      {item.status}
+                    </CustomBadge>
+                  </TableCell>
+                  <TableCell className="pr-6 text-right text-muted-foreground text-xs">
+                    {item.date}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardTable>
+      </div>
 
       {/* Confirmation Dialog */}
       <ConfirmDialog
@@ -260,6 +248,6 @@ export default function MemberDepositsPage() {
         confirmText="Yes, Submit Now"
         variant="default"
       />
-    </AnimatedSection>
+    </>
   )
 }
