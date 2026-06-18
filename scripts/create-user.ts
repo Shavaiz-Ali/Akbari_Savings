@@ -14,7 +14,6 @@ import User from '../models/user'
 import AppSettings from '../models/appSettings'
 
 async function main() {
-    console.log('Connecting to:', process.env.MONGODB_URI?.slice(0, 30) + '...')
     await connectDB()
 
     const admins = [

@@ -1,10 +1,11 @@
 import mongoose, { Schema, Document, Model } from 'mongoose'
+import { ACTIONS, Action } from '@/lib/constants'
 
 export interface IDepositApproval extends Document {
     _id: mongoose.Types.ObjectId
     depositId: mongoose.Types.ObjectId
     adminId: mongoose.Types.ObjectId
-    action: 'approved' | 'rejected'
+    action: Action
     note?: string
     createdAt: Date
 }
@@ -13,7 +14,7 @@ const DepositApprovalSchema = new Schema<IDepositApproval>(
     {
         depositId: { type: Schema.Types.ObjectId, ref: 'Deposit', required: true },
         adminId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-        action: { type: String, enum: ['approved', 'rejected'], required: true },
+        action: { type: String, enum: Object.values(ACTIONS), required: true },
         note: { type: String, default: '' },
     },
     { timestamps: true }

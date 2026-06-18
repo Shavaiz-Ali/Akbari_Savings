@@ -6,12 +6,14 @@ import { CustomButton } from "@/components/ui/CustomButton"
 import { CustomBadge } from "@/components/ui/CustomBadge"
 import { CustomInput } from "@/components/ui/CustomInput"
 import { CustomAvatar } from "@/components/ui/CustomAvatar"
+import { QueryBoundary } from "@/components/ui/QueryBoundary"
 import { toast } from "sonner"
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog"
 import { AnimatedSection } from "@/components/ui/AnimatedSection"
 import { PageHeader } from "@/components/ui/PageHeader"
 import { CardTable } from "@/components/ui/CardTable"
 import { EmptyState } from "@/components/ui/EmptyState"
+import { SkeletonPatterns } from "@/components/ui/Skeleton"
 import {
   Table,
   TableBody,
@@ -43,55 +45,89 @@ import {
   Target,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
-
-// ── Mock Data ──
-const activeMembers = [
-  { id: "1", name: "Ahmed Raza", email: "ahmed@email.com", target: "PKR 15,000", balance: "PKR 97,500", joined: "Jan 15, 2025" },
-  { id: "2", name: "Fatima Noor", email: "fatima@email.com", target: "PKR 12,000", balance: "PKR 84,000", joined: "Feb 3, 2025" },
-  { id: "3", name: "Hassan Ali", email: "hassan@email.com", target: "PKR 20,000", balance: "PKR 1,40,000", joined: "Dec 8, 2024" },
-  { id: "4", name: "Sana Malik", email: "sana@email.com", target: "PKR 10,000", balance: "PKR 60,000", joined: "Mar 22, 2025" },
-  { id: "5", name: "Usman Sheikh", email: "usman@email.com", target: "PKR 18,000", balance: "PKR 1,08,000", joined: "Jan 1, 2025" },
-  { id: "6", name: "Zainab Iqbal", email: "zainab@email.com", target: "PKR 15,000", balance: "PKR 45,000", joined: "Apr 10, 2025" },
-]
-
-const pendingMembers = [
-  { id: "p1", name: "Bilal Khan", email: "bilal@email.com", date: "Jun 10, 2026" },
-  { id: "p2", name: "Ayesha Siddiqui", email: "ayesha@email.com", date: "Jun 9, 2026" },
-]
+import { useActiveMembers, usePendingMembers, useCreateMember, useDeactivateMember, useApproveMember, useRejectMember } from "@/services/memberService/hooks"
+import { IMemberUser } from "@/services/memberService/api"
 
 type Tab = "active" | "pending"
 
 export default function AdminMembersPage() {
   const [activeTab, setActiveTab] = React.useState<Tab>("active")
   const [addMemberOpen, setAddMemberOpen] = React.useState(false)
-  
+
+  // Form fields
+  const [fullName, setFullName] = React.useState("")
+  const [email, setEmail] = React.useState("")
+  const [password, setPassword] = React.useState("")
+  const [monthlyTarget, setMonthlyTarget] = React.useState("")
+
   // Confirmation states
   const [isDeactivateOpen, setIsDeactivateOpen] = React.useState(false)
   const [isApproveOpen, setIsApproveOpen] = React.useState(false)
-  const [selectedMember, setSelectedMember] = React.useState<{id: string, name: string} | null>(null)
+  const [selectedMember, setSelectedMember] = React.useState<{ id: string; name: string } | null>(null)
 
-  const handleDeactivate = (member: {id: string, name: string}) => {
+  // Data hooks
+  const { data: activeData, isLoading: loadingActive, error: errorActive, refetch: refetchActive } = useActiveMembers()
+  const { data: pendingData, isLoading: loadingPending, error: errorPending, refetch: refetchPending } = usePendingMembers()
+
+  const activeMembers: IMemberUser[] = activeData?.data ?? []
+  const pendingMembers: IMemberUser[] = pendingData?.data ?? []
+
+  // Mutation hooks
+  const createMember = useCreateMember()
+  const deactivateMember = useDeactivateMember()
+  const approveMember = useApproveMember()
+  const rejectMember = useRejectMember()
+
+  const handleDeactivate = (member: { id: string; name: string }) => {
     setSelectedMember(member)
     setIsDeactivateOpen(true)
   }
 
-  const handleApprove = (member: {id: string, name: string}) => {
+  const handleApprove = (member: { id: string; name: string }) => {
     setSelectedMember(member)
     setIsApproveOpen(true)
   }
 
-  const handleAddMemberSubmit = () => {
-    setAddMemberOpen(false)
-    toast.success("New member account created successfully")
+  const clearForm = () => {
+    setFullName("")
+    setEmail("")
+    setPassword("")
+    setMonthlyTarget("")
   }
+
+  const handleAddMemberSubmit = () => {
+    createMember.mutate(
+      {
+        fullName,
+        email,
+        password,
+        monthlyTarget: Number(monthlyTarget),
+      },
+      {
+        onSuccess: () => {
+          setAddMemberOpen(false)
+          clearForm()
+        },
+      }
+    )
+  }
+
+  const formatDate = (iso: string) =>
+    new Date(iso).toLocaleDateString("en-PK", { month: "short", day: "numeric", year: "numeric" })
 
   return (
     <>
-      <PageHeader 
-        title="Members" 
+      <PageHeader
+        title="Members"
         description="Manage member accounts and approve new signups"
       >
-        <Dialog open={addMemberOpen} onOpenChange={setAddMemberOpen}>
+        <Dialog
+          open={addMemberOpen}
+          onOpenChange={(open) => {
+            setAddMemberOpen(open)
+            if (!open) clearForm()
+          }}
+        >
           <DialogTrigger asChild>
             <CustomButton className="gap-2 shrink-0">
               <UserPlus className="size-4" />
@@ -112,24 +148,32 @@ export default function AdminMembersPage() {
                 label="Full Name"
                 placeholder="Enter full name"
                 icon={<UserIcon />}
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
               />
               <CustomInput
                 label="Email Address"
                 type="email"
                 placeholder="name@example.com"
                 icon={<Mail />}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
               <CustomInput
                 label="Password"
                 type="password"
                 placeholder="••••••••"
                 icon={<Lock />}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
               <CustomInput
                 label="Monthly Target (PKR)"
                 type="number"
                 placeholder="15000"
                 icon={<Target />}
+                value={monthlyTarget}
+                onChange={(e) => setMonthlyTarget(e.target.value)}
               />
             </div>
             <DialogFooter>
@@ -139,8 +183,11 @@ export default function AdminMembersPage() {
               >
                 Cancel
               </CustomButton>
-              <CustomButton onClick={handleAddMemberSubmit}>
-                Create Member
+              <CustomButton
+                onClick={handleAddMemberSubmit}
+                disabled={createMember.isPending}
+              >
+                {createMember.isPending ? "Creating…" : "Create Member"}
               </CustomButton>
             </DialogFooter>
           </DialogContent>
@@ -181,89 +228,109 @@ export default function AdminMembersPage() {
 
       {/* Active Members Table */}
       {activeTab === "active" && (
-        <CardTable>
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-muted/30">
-                <TableHead className="pl-6">Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Monthly Target</TableHead>
-                <TableHead>Total Balance</TableHead>
-                <TableHead>Joined</TableHead>
-                <TableHead className="pr-6 text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {activeMembers.map((member) => (
-                <TableRow key={member.id}>
-                  <TableCell className="pl-6">
-                    <div className="flex items-center gap-3">
-                      <CustomAvatar
-                        initials={member.name
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")}
-                        size="sm"
-                      />
-                      <span className="font-medium text-foreground">
-                        {member.name}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {member.email}
-                  </TableCell>
-                  <TableCell className="font-semibold text-foreground">
-                    {member.target}
-                  </TableCell>
-                  <TableCell className="font-semibold text-primary">
-                    {member.balance}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground text-xs">
-                    {member.joined}
-                  </TableCell>
-                  <TableCell className="pr-6 text-right">
-                    <div className="flex items-center justify-end gap-1">
-                      <CustomButton
-                        variant="ghost"
-                        size="sm"
-                        className="gap-1 text-xs"
-                      >
-                        <Pencil className="size-3" />
-                        Edit
-                      </CustomButton>
-                      <CustomButton
-                        variant="ghost"
-                        size="sm"
-                        className="gap-1 text-xs text-destructive hover:bg-destructive/10"
-                        onClick={() => handleDeactivate({ id: member.id, name: member.name })}
-                      >
-                        <UserX className="size-3" />
-                        Deactivate
-                      </CustomButton>
-                    </div>
-                  </TableCell>
+        <QueryBoundary
+          isLoading={loadingActive}
+          loadingPlaceholder={<SkeletonPatterns.Table rows={8} />}
+          error={errorActive}
+          onRetry={refetchActive}
+          isEmpty={!loadingActive && activeMembers.length === 0}
+          emptyIcon={Users}
+          emptyTitle="No active members yet"
+          emptyDescription="Active members will appear here once accounts are approved"
+        >
+          <CardTable>
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-muted/30">
+                  <TableHead className="pl-6">Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Monthly Target</TableHead>
+                  <TableHead>Total Balance</TableHead>
+                  <TableHead>Joined</TableHead>
+                  <TableHead className="pr-6 text-right">Actions</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardTable>
+              </TableHeader>
+              <TableBody>
+                {activeMembers.map((member) => (
+                  <TableRow key={member._id}>
+                    <TableCell className="pl-6">
+                      <div className="flex items-center gap-3">
+                        <CustomAvatar
+                          initials={member.fullName
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")}
+                          size="sm"
+                        />
+                        <span className="font-medium text-foreground">
+                          {member.fullName}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {member.email}
+                    </TableCell>
+                    <TableCell className="font-semibold text-foreground">
+                      PKR {member.monthlyTarget.toLocaleString()}
+                    </TableCell>
+                    <TableCell className="font-semibold text-primary">
+                      PKR {member.totalBalance.toLocaleString()}
+                    </TableCell>
+                    <TableCell className="text-muted-foreground text-xs">
+                      {formatDate(member.createdAt)}
+                    </TableCell>
+                    <TableCell className="pr-6 text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <CustomButton
+                          variant="ghost"
+                          size="sm"
+                          className="gap-1 text-xs"
+                        >
+                          <Pencil className="size-3" />
+                          Edit
+                        </CustomButton>
+                        <CustomButton
+                          variant="ghost"
+                          size="sm"
+                          className="gap-1 text-xs text-destructive hover:bg-destructive/10"
+                          onClick={() => handleDeactivate({ id: member._id, name: member.fullName })}
+                        >
+                          <UserX className="size-3" />
+                          Deactivate
+                        </CustomButton>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardTable>
+        </QueryBoundary>
       )}
 
       {/* Pending Approval Cards */}
       {activeTab === "pending" && (
-        <AnimatedSection delay="300" className="space-y-5">
-          {pendingMembers.length === 0 ? (
-            <EmptyState 
-              icon={Users}
-              title="No pending approvals"
-              description="All signup requests have been reviewed"
-            />
-          ) : (
+        <QueryBoundary
+          isLoading={loadingPending}
+          loadingPlaceholder={
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              <SkeletonPatterns.Card />
+              <SkeletonPatterns.Card />
+              <SkeletonPatterns.Card />
+            </div>
+          }
+          error={errorPending}
+          onRetry={refetchPending}
+          isEmpty={!loadingPending && pendingMembers.length === 0}
+          emptyIcon={Users}
+          emptyTitle="No pending approvals"
+          emptyDescription="All signup requests have been reviewed"
+        >
+          <AnimatedSection delay="300" className="space-y-5">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {pendingMembers.map((user) => (
                 <CustomCard
-                  key={user.id}
+                  key={user._id}
                   className="hover:border-primary/30 transition-colors duration-300"
                   body={
                     <div className="space-y-5">
@@ -275,22 +342,22 @@ export default function AdminMembersPage() {
                       </div>
 
                       <div className="space-y-2">
-                        <h3 className="font-bold text-foreground">{user.name}</h3>
+                        <h3 className="font-bold text-foreground">{user.fullName}</h3>
                         <div className="flex items-center gap-2 text-xs text-muted-foreground">
                           <Mail className="size-3" />
                           <span className="truncate">{user.email}</span>
                         </div>
                         <div className="flex items-center gap-2 text-xs text-muted-foreground">
                           <Calendar className="size-3" />
-                          <span>Signed up {user.date}</span>
+                          <span>Signed up {formatDate(user.createdAt)}</span>
                         </div>
                       </div>
 
                       <div className="flex gap-2">
-                        <CustomButton 
-                          size="sm" 
+                        <CustomButton
+                          size="sm"
                           className="flex-1 gap-1 shadow-md"
-                          onClick={() => handleApprove({ id: user.id, name: user.name })}
+                          onClick={() => handleApprove({ id: user._id, name: user.fullName })}
                         >
                           <Check className="size-3.5" />
                           Approve
@@ -299,7 +366,7 @@ export default function AdminMembersPage() {
                           variant="ghost"
                           size="sm"
                           className="flex-1 gap-1 text-destructive hover:bg-destructive/10"
-                          onClick={() => toast.error(`Rejected signup for ${user.name}`)}
+                          onClick={() => rejectMember.mutate(user._id)}
                         >
                           <X className="size-3.5" />
                           Reject
@@ -310,8 +377,8 @@ export default function AdminMembersPage() {
                 />
               ))}
             </div>
-          )}
-        </AnimatedSection>
+          </AnimatedSection>
+        </QueryBoundary>
       )}
 
       {/* Confirmation Dialogs */}
@@ -321,7 +388,7 @@ export default function AdminMembersPage() {
         title="Deactivate Member"
         description={`Are you sure you want to deactivate ${selectedMember?.name}? They will lose access to all features immediately.`}
         onConfirm={async () => {
-          toast.warning(`${selectedMember?.name} has been deactivated`)
+          if (selectedMember) deactivateMember.mutate(selectedMember.id)
           setIsDeactivateOpen(false)
         }}
         confirmText="Deactivate Member"
@@ -334,7 +401,7 @@ export default function AdminMembersPage() {
         title="Approve Member"
         description={`Approving ${selectedMember?.name} will grant them access to the member dashboard.`}
         onConfirm={async () => {
-          toast.success(`${selectedMember?.name} is now an active member`)
+          if (selectedMember) approveMember.mutate(selectedMember.id)
           setIsApproveOpen(false)
         }}
         confirmText="Approve Member"

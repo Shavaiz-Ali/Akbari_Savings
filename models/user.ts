@@ -1,11 +1,12 @@
 import mongoose, { Schema, Document, Model } from 'mongoose'
+import { USER_ROLES, UserRole } from '@/lib/constants'
 
 export interface IUser extends Document {
     _id: mongoose.Types.ObjectId
     fullName: string
     email: string
     passwordHash: string
-    role: 'admin' | 'member'
+    role: UserRole
     monthlyTarget: number
     totalBalance: number
     createdBy: mongoose.Types.ObjectId | null      // admin who created directly, null if self-signup
@@ -21,7 +22,7 @@ const UserSchema = new Schema<IUser>(
         fullName: { type: String, required: true, trim: true },
         email: { type: String, required: true, unique: true, lowercase: true, trim: true },
         passwordHash: { type: String, required: true },
-        role: { type: String, enum: ['admin', 'member'], default: 'member' },
+        role: { type: String, enum: Object.values(USER_ROLES), default: USER_ROLES.MEMBER },
         monthlyTarget: { type: Number, default: 0, min: 0 },
         totalBalance: { type: Number, default: 0, min: 0 },
         createdBy: { type: Schema.Types.ObjectId, ref: 'User', default: null },

@@ -1,11 +1,12 @@
 import mongoose, { Schema, Document, Model } from 'mongoose'
+import { STATUSES, Status } from '@/lib/constants'
 
 export interface ILoan extends Document {
     _id: mongoose.Types.ObjectId
     memberId: mongoose.Types.ObjectId
     amount: number
     reason?: string
-    status: 'pending' | 'approved' | 'rejected'
+    status: Status
     interestRate: number
     approvedBy: mongoose.Types.ObjectId | null
     approvedAt: Date | null
@@ -19,7 +20,7 @@ const LoanSchema = new Schema<ILoan>(
         memberId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
         amount: { type: Number, required: true, min: 0 },
         reason: { type: String, default: '' },
-        status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
+        status: { type: String, enum: Object.values(STATUSES), default: STATUSES.PENDING },
         interestRate: { type: Number, default: 0, min: 0 },
         approvedBy: { type: Schema.Types.ObjectId, ref: 'User', default: null },
         approvedAt: { type: Date, default: null },

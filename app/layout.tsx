@@ -3,6 +3,7 @@ import { Inter, Merriweather, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { NextAuthSessionProvider } from "@/providers/sessionProvider";
+import { ReactQueryProvider } from "@/providers/queryProvider";
 import { Toaster } from "sonner";
 
 const fontSans = Inter({
@@ -40,10 +41,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <NextAuthSessionProvider>
-            {children}
-            <Toaster position="top-right" richColors closeButton />
-          </NextAuthSessionProvider>
+          <ReactQueryProvider>
+            <NextAuthSessionProvider>
+              {children}
+              <Toaster position="top-right" richColors closeButton />
+            </NextAuthSessionProvider>
+          </ReactQueryProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -1,11 +1,12 @@
 import mongoose, { Schema, Document, Model } from 'mongoose'
+import { STATUSES, Status } from '@/lib/constants'
 
 export interface IDeposit extends Document {
     _id: mongoose.Types.ObjectId
     userId: mongoose.Types.ObjectId
     amount: number
     screenshotUrl: string
-    status: 'pending' | 'approved' | 'rejected'
+    status: Status
     month: Date  // stored as first day of the month e.g. 2024-01-01
     note?: string
     createdAt: Date
@@ -17,7 +18,7 @@ const DepositSchema = new Schema<IDeposit>(
         userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
         amount: { type: Number, required: true, min: 0 },
         screenshotUrl: { type: String, required: true },
-        status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
+        status: { type: String, enum: Object.values(STATUSES), default: STATUSES.PENDING },
         month: { type: Date, required: true }, // first day of month
         note: { type: String, default: '' },
     },
