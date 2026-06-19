@@ -10,6 +10,7 @@ import { CardTable } from "@/components/ui/CardTable"
 import { toast } from "sonner"
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog"
 import { AnimatedSection } from "@/components/ui/AnimatedSection"
+import { Typography } from "@/components/ui/Typography"
 import {
   Table,
   TableBody,
@@ -162,7 +163,9 @@ export default function MemberDepositsPage() {
                   <Clock className="size-8" />
                 </div>
                 <div className="flex-1 text-center sm:text-left space-y-1">
-                  <h3 className="text-lg font-bold text-foreground font-serif">Awaiting Admin Approval</h3>
+                  <Typography variant="h4" as="h3">
+                    Awaiting Admin Approval
+                  </Typography>
                   <p className="text-sm text-muted-foreground max-w-md">
                     Your deposit for June 2026 has been submitted and is currently being reviewed by an admin.
                   </p>
@@ -181,7 +184,9 @@ export default function MemberDepositsPage() {
                   <CheckCircle2 className="size-8" />
                 </div>
                 <div className="flex-1 text-center sm:text-left space-y-1">
-                  <h3 className="text-lg font-bold text-foreground font-serif">Deposit Approved</h3>
+                  <Typography variant="h4" as="h3">
+                    Deposit Approved
+                  </Typography>
                   <p className="text-sm text-muted-foreground max-w-md">
                     Your deposit for the current month has been successfully processed and added to your balance.
                   </p>
@@ -196,9 +201,9 @@ export default function MemberDepositsPage() {
       {/* History Table */}
       <div className="space-y-4">
         <div className="flex items-center gap-3">
-          <h2 className="text-xl font-bold font-serif text-foreground leading-none">
+          <Typography variant="h3">
             Deposit History
-          </h2>
+          </Typography>
           <CustomBadge variant="pending">{history.length}</CustomBadge>
         </div>
         <CardTable>

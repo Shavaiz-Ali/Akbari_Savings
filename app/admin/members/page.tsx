@@ -14,6 +14,7 @@ import { PageHeader } from "@/components/ui/PageHeader"
 import { CardTable } from "@/components/ui/CardTable"
 import { EmptyState } from "@/components/ui/EmptyState"
 import { SkeletonPatterns } from "@/components/ui/Skeleton"
+import { Typography } from "@/components/ui/Typography"
 import {
   Table,
   TableBody,
@@ -136,8 +137,10 @@ export default function AdminMembersPage() {
           </DialogTrigger>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle className="font-serif text-lg">
-                Add New Member
+              <DialogTitle asChild>
+                <Typography variant="h4">
+                  Add New Member
+                </Typography>
               </DialogTitle>
               <DialogDescription>
                 Create a new member account. They will be automatically approved.

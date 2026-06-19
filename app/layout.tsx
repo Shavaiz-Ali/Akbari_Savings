@@ -1,23 +1,25 @@
 import type { Metadata } from "next";
-import { Inter, Merriweather, JetBrains_Mono } from "next/font/google";
+import { Montserrat, Playfair_Display, Source_Code_Pro } from "next/font/google";
+
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { NextAuthSessionProvider } from "@/providers/sessionProvider";
 import { ReactQueryProvider } from "@/providers/queryProvider";
 import { Toaster } from "sonner";
 
-const fontSans = Inter({
+import "./globals.css";
+
+const fontSans = Montserrat({
   subsets: ["latin"],
   variable: "--font-sans",
 });
 
-const fontSerif = Merriweather({
-  weight: ["300", "400", "700", "900"],
+const fontSerif = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-serif",
 });
 
-const fontMono = JetBrains_Mono({
+const fontMono = Source_Code_Pro({
   subsets: ["latin"],
   variable: "--font-mono",
 });

@@ -1,7 +1,6 @@
-"use client"
-
 import * as React from "react"
 import { AnimatedSection } from "./AnimatedSection"
+import { Typography } from "./Typography"
 
 interface PageHeaderProps {
   title: string
@@ -17,13 +16,13 @@ export function PageHeader({ title, description, children }: PageHeaderProps) {
       className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
     >
       <div className="space-y-1">
-        <h1 className="text-3xl lg:text-4xl font-bold tracking-tight font-serif text-foreground">
+        <Typography variant="h1" className="text-3xl lg:text-4xl">
           {title}
-        </h1>
+        </Typography>
         {description && (
-          <p className="text-muted-foreground text-sm">
+          <Typography variant="muted" className="text-sm">
             {description}
-          </p>
+          </Typography>
         )}
       </div>
       {children && <div className="flex items-center gap-3">{children}</div>}

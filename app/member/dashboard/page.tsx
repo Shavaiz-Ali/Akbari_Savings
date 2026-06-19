@@ -7,6 +7,7 @@ import { CustomBadge } from "@/components/ui/CustomBadge"
 import { AnimatedSection } from "@/components/ui/AnimatedSection"
 import { PageHeader } from "@/components/ui/PageHeader"
 import { CardTable } from "@/components/ui/CardTable"
+import { Typography } from "@/components/ui/Typography"
 import {
   Table,
   TableBody,
@@ -119,9 +120,9 @@ export default function MemberDashboardPage() {
           body={
             <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold font-serif text-foreground">
+                <Typography variant="h3">
                   Annual Progress
-                </h2>
+                </Typography>
                 <span className="text-sm font-bold text-primary">{stats.progress}% of Goal</span>
               </div>
               
@@ -144,9 +145,9 @@ export default function MemberDashboardPage() {
       {/* Recent Activity */}
       <AnimatedSection delay="600" className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold font-serif text-foreground">
+          <Typography variant="h3">
             Recent Deposits
-          </h2>
+          </Typography>
           <CustomBadge variant="approved">View All History</CustomBadge>
         </div>
         <CardTable>

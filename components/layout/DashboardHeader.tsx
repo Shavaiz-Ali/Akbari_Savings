@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { ThemeToggle } from "@/components/ui/ThemeToggle"
 import { CustomAvatar } from "@/components/ui/CustomAvatar"
+import { Typography } from "@/components/ui/Typography"
 import { Bell, Search } from "lucide-react"
 import { getPageTitle } from "@/lib/navigation"
 
@@ -25,9 +26,13 @@ export function DashboardHeader() {
     <header className="h-16 border-b border-border/50 bg-background/80 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between px-6 transition-all">
       {/* Title on the Left */}
       <div className="flex items-center gap-4">
-        <h1 className="text-xl font-bold tracking-tight text-foreground/90 akbari-animate akbari-right">
+        <Typography
+          variant="h3"
+          as="h1"
+          className="text-xl tracking-tight text-foreground/90 akbari-animate akbari-right"
+        >
           {title}
-        </h1>
+        </Typography>
       </div>
 
       {/* Icons Group on the Right */}

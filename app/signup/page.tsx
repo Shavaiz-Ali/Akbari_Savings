@@ -8,6 +8,7 @@ import { CustomButton } from "@/components/ui/CustomButton";
 import { Logo } from "@/components/ui/Logo";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
+import { Typography } from "@/components/ui/Typography";
 import { User, Mail, Lock, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 
@@ -130,10 +131,12 @@ export default function SignupPage() {
                       <CheckCircle className="size-10" />
                     </div>
                     <div className="space-y-2">
-                      <h1 className="text-2xl font-bold tracking-tight font-serif">Request submitted!</h1>
-                      <p className="text-muted-foreground">
+                      <Typography variant="h1" className="text-2xl">
+                        Request submitted!
+                      </Typography>
+                      <Typography variant="muted">
                         An admin will review your account shortly. You will be able to sign in once approved.
-                      </p>
+                      </Typography>
                     </div>
                     <Link href="/login" className="w-full">
                       <CustomButton className="w-full">Back to Login</CustomButton>
@@ -142,12 +145,12 @@ export default function SignupPage() {
                 ) : (
                   <>
                     <div className="flex flex-col items-center justify-center text-center space-y-3">
-                      <h1 className="text-3xl font-bold tracking-tight text-foreground font-serif">
+                      <Typography variant="h1" className="text-3xl">
                         Create an Account
-                      </h1>
-                      <p className="text-sm text-muted-foreground font-medium max-w-[320px]">
+                      </Typography>
+                      <Typography variant="muted" className="text-sm font-medium max-w-[320px]">
                         Your account will be reviewed by an admin before you can sign in
-                      </p>
+                      </Typography>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-6">

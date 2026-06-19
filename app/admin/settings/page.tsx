@@ -1,15 +1,18 @@
-"use client"
-
-import * as React from "react"
+import type { Metadata } from "next"
 import { Settings as SettingsIcon, Info } from "lucide-react"
 import { PageHeader } from "@/components/ui/PageHeader"
 import { EmptyState } from "@/components/ui/EmptyState"
 
+export const metadata: Metadata = {
+  title: "Settings | Akbari Savings Admin",
+  description: "Platform configurations and admin preferences.",
+}
+
 export default function AdminSettingsPage() {
   return (
     <>
-      <PageHeader 
-        title="Settings" 
+      <PageHeader
+        title="Settings"
         description="Platform configurations and admin preferences"
       />
 

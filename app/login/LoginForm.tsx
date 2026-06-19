@@ -10,6 +10,7 @@ import { CustomButton } from "@/components/ui/CustomButton"
 import { Logo } from "@/components/ui/Logo"
 import { ThemeToggle } from "@/components/ui/ThemeToggle"
 import { AnimatedSection } from "@/components/ui/AnimatedSection"
+import { Typography } from "@/components/ui/Typography"
 import { Mail, Lock } from "lucide-react"
 import { toast } from "sonner"
 
@@ -119,12 +120,12 @@ export default function LoginForm() {
             body={
               <div className="space-y-8 py-2">
                 <div className="flex flex-col items-center justify-center text-center space-y-2">
-                  <h1 className="text-3xl font-bold tracking-tight text-foreground font-serif">
+                  <Typography variant="h1" className="text-3xl">
                     Sign In
-                  </h1>
-                  <p className="text-sm text-muted-foreground font-medium">
+                  </Typography>
+                  <Typography variant="muted" className="text-sm font-medium">
                     Enter your details to access your account
-                  </p>
+                  </Typography>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">

@@ -1,15 +1,18 @@
-"use client"
-
-import * as React from "react"
+import type { Metadata } from "next"
 import { Lock, Construction } from "lucide-react"
 import { PageHeader } from "@/components/ui/PageHeader"
 import { EmptyState } from "@/components/ui/EmptyState"
 
+export const metadata: Metadata = {
+  title: "Loans | Akbari Savings",
+  description: "Apply for interest-free loans and track your repayment progress.",
+}
+
 export default function MemberLoansPage() {
   return (
     <>
-      <PageHeader 
-        title="Loans" 
+      <PageHeader
+        title="Loans"
         description="Apply for interest-free loans and track your repayment progress"
       />
 
