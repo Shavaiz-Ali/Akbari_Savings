@@ -251,7 +251,7 @@ h3,
 h4,
 h5,
 h6 {
-  @apply tracking-tight font-serif;
+  @apply tracking-tight;
 }
 
 ::-webkit-scrollbar {

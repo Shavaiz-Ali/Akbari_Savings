@@ -25,15 +25,17 @@ const defaultTags: DefaultTag = {
   label: "span",
 }
 
+// Headings use font-serif (Playfair Display) — body/UI text uses font-sans (Montserrat)
+// font-mono (Source Code Pro) is intentionally NOT used here — that's for code/numeric data only
 const variantStyles: Record<TypographyVariant, string> = {
   h1: "font-mono text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-foreground",
   h2: "font-mono text-2xl md:text-3xl font-bold tracking-tight text-foreground",
   h3: "font-mono text-xl md:text-2xl font-bold text-foreground",
   h4: "font-mono text-lg md:text-xl font-semibold text-foreground",
-  body: "font-mono text-base text-foreground",
-  bodySmall: "font-mono text-sm text-foreground",
-  muted: "font-mono text-sm text-muted-foreground",
-  label: "font-mono text-xs font-medium uppercase tracking-wide text-muted-foreground",
+  body: "font-sans text-base text-foreground",
+  bodySmall: "font-sans text-sm text-foreground",
+  muted: "font-sans text-sm text-muted-foreground",
+  label: "font-sans text-xs font-medium uppercase tracking-wide text-muted-foreground",
 }
 
 export interface TypographyProps extends React.HTMLAttributes<HTMLElement> {

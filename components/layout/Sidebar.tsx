@@ -133,7 +133,7 @@ export function Sidebar({ navItems, role, children }: SidebarProps) {
         </div>
 
         {/* Page content */}
-        <div className="flex-1 overflow-y-auto bg-background p-4 lg:p-6 pb-12">
+        <div className="flex-1 overflow-y-auto bg-background p-4 lg:p-6 pb-12 pb-12">
           <div className="max-w-screen-2xl mx-auto h-full">
             <AnimatedSection direction="none" className="space-y-10">
               {children}
