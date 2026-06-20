@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Montserrat, Playfair_Display, Source_Code_Pro } from "next/font/google";
 
 import "./globals.css";
@@ -6,8 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { NextAuthSessionProvider } from "@/providers/sessionProvider";
 import { ReactQueryProvider } from "@/providers/queryProvider";
 import { Toaster } from "sonner";
-
-import "./globals.css";
+import { PWARegister } from "@/components/layout/PWARegister";
 
 const fontSans = Montserrat({
   subsets: ["latin"],
@@ -24,9 +23,22 @@ const fontMono = Source_Code_Pro({
   variable: "--font-mono",
 });
 
+export const viewport: Viewport = {
+  themeColor: "#8b5cf6",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 export const metadata: Metadata = {
   title: "Akbari Savings | Premium Member Portfolio",
   description: "Securely manage and track your savings with the Akbari Savings platform.",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Akbari Savings",
+  },
 };
 
 export default function RootLayout({
@@ -46,6 +58,7 @@ export default function RootLayout({
           <ReactQueryProvider>
             <NextAuthSessionProvider>
               {children}
+              <PWARegister />
               <Toaster position="top-right" richColors closeButton />
             </NextAuthSessionProvider>
           </ReactQueryProvider>
