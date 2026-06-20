@@ -79,20 +79,17 @@ export default function LoginForm() {
 
       if (result?.error) {
         toast.error(result.error)
-        setIsLoading(false)
-        return
-      }
-
-      if (result?.ok) {
+      } else {
+        const user = await getSession()
+        console.log("user from session", user)
         toast.success("Welcome back! Redirecting...")
-        // Hard navigation — guarantees the browser sends the fresh cookie
-        // on the next request, so middleware sees the authenticated session.
-        window.location.href = "/"
-        return // don't flip isLoading off; we're leaving the page
+        router.push("/")
+        router.refresh()
       }
     } catch (err) {
       console.error("Login error:", err)
       toast.error("An unexpected error occurred. Please try again.")
+    } finally {
       setIsLoading(false)
     }
   }

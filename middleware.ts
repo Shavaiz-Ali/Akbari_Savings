@@ -14,6 +14,8 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
 
+  console.log(`[Middleware Debug] Path: ${pathname} | Has Token: ${!!token} | Token Role: ${token?.role} | Secret Length: ${process.env.NEXTAUTH_SECRET?.length || 0}`)
+
   const isPublicRoute = publicRoutes.some(
     (route) => pathname === route || pathname.startsWith(route + "/")
   )
