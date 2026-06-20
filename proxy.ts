@@ -1,4 +1,4 @@
-import { getToken } from "next-auth/jwt"
+import { decode } from "next-auth/jwt"
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
@@ -10,11 +10,28 @@ function getDashboardForRole(role: string | undefined): string {
   return "/login"
 }
 
-export async function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
+async function getDecodedToken(req: NextRequest) {
+  try {
+    const sessionToken = req.cookies.get("next-auth.session-token")?.value 
+      || req.cookies.get("__Secure-next-auth.session-token")?.value
 
-  console.log(`[Middleware Debug] Path: ${pathname} | Has Token: ${!!token} | Token Role: ${token?.role} | Secret Length: ${process.env.NEXTAUTH_SECRET?.length || 0}`)
+    if (!sessionToken) return null
+
+    return await decode({
+      token: sessionToken,
+      secret: process.env.NEXTAUTH_SECRET || "",
+    })
+  } catch (error) {
+    console.error("[Proxy Debug] Error decoding token:", error)
+    return null
+  }
+}
+
+export async function proxy(req: NextRequest) {
+  const { pathname } = req.nextUrl
+  const token = await getDecodedToken(req)
+
+  console.log(`[Proxy Debug] Path: ${pathname} | Has Token: ${!!token} | Token Role: ${token?.role} | Secret Length: ${process.env.NEXTAUTH_SECRET?.length || 0}`)
 
   const isPublicRoute = publicRoutes.some(
     (route) => pathname === route || pathname.startsWith(route + "/")
