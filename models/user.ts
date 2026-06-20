@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document, Model } from 'mongoose'
-import { USER_ROLES, UserRole } from '@/lib/constants'
+import { DEFAULT_MONTHLY_TARGET, USER_ROLES, UserRole } from '@/lib/constants'
 
 export interface IUser extends Document {
     _id: mongoose.Types.ObjectId
@@ -23,10 +23,10 @@ const UserSchema = new Schema<IUser>(
         email: { type: String, required: true, unique: true, lowercase: true, trim: true },
         passwordHash: { type: String, required: true },
         role: { type: String, enum: Object.values(USER_ROLES), default: USER_ROLES.MEMBER },
-        monthlyTarget: { type: Number, default: 0, min: 0 },
+        monthlyTarget: { type: Number, default: DEFAULT_MONTHLY_TARGET, min: 0 },
         totalBalance: { type: Number, default: 0, min: 0 },
         createdBy: { type: Schema.Types.ObjectId, ref: 'User', default: null },
-        isActive: { type: Boolean, default: false },  // always false until approved
+        isActive: { type: Boolean, default: false },
         approvedBy: { type: Schema.Types.ObjectId, ref: 'User', default: null },
         approvedAt: { type: Date, default: null },
     },

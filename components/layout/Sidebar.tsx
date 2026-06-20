@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useSearchParams, useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { cn } from "@/lib/utils"
 import { Logo } from "@/components/ui/Logo"
@@ -15,6 +15,7 @@ import { DashboardHeader } from "./DashboardHeader"
 
 import { AnimatedSection } from "@/components/ui/AnimatedSection"
 import { getIconComponent } from "@/lib/navigation"
+import { SubmitDepositDialog } from "../member/deposit/SubmitDepositDialog"
 
 export interface NavItem {
   label: string
@@ -31,10 +32,23 @@ interface SidebarProps {
 
 export function Sidebar({ navItems, role, children }: SidebarProps) {
   const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const router = useRouter()
   const { data: session } = useSession()
   const [mobileOpen, setMobileOpen] = React.useState(false)
 
   const userName = session?.user?.name || "User"
+  
+  const showDepositDialog = searchParams.get("deposit") === "true"
+
+  const handleCloseDepositDialog = (open: boolean) => {
+    if (!open) {
+      const params = new URLSearchParams(searchParams.toString())
+      params.delete("deposit")
+      const query = params.toString() ? `?${params.toString()}` : ""
+      router.replace(`${pathname}${query}`)
+    }
+  }
 
   const sidebarContent = (
     <div className="flex flex-col h-full">
@@ -141,6 +155,8 @@ export function Sidebar({ navItems, role, children }: SidebarProps) {
           </div>
         </div>
       </main>
+
+      <SubmitDepositDialog open={showDepositDialog} onOpenChange={handleCloseDepositDialog} />
     </div>
   )
 }

@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { signIn } from "next-auth/react"
+import { getSession, signIn } from "next-auth/react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { CustomCard } from "@/components/ui/CustomCard"
@@ -18,7 +18,7 @@ export default function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const urlError = searchParams.get("error")
-  
+
   const [isLoading, setIsLoading] = React.useState(false)
   const [formData, setFormData] = React.useState({
     email: "",
@@ -35,7 +35,7 @@ export default function LoginForm() {
       if (urlError === "CredentialsSignin") {
         toast.error("Invalid email or password.")
       } else if (urlError.includes("pending admin approval")) {
-         toast.error("Your account is pending admin approval.")
+        toast.error("Your account is pending admin approval.")
       } else {
         toast.error(urlError)
       }
@@ -79,15 +79,20 @@ export default function LoginForm() {
 
       if (result?.error) {
         toast.error(result.error)
-      } else {
+        setIsLoading(false)
+        return
+      }
+
+      if (result?.ok) {
         toast.success("Welcome back! Redirecting...")
-        router.push("/")
-        router.refresh()
+        // Hard navigation — guarantees the browser sends the fresh cookie
+        // on the next request, so middleware sees the authenticated session.
+        window.location.href = "/"
+        return // don't flip isLoading off; we're leaving the page
       }
     } catch (err) {
       console.error("Login error:", err)
       toast.error("An unexpected error occurred. Please try again.")
-    } finally {
       setIsLoading(false)
     }
   }

@@ -39,3 +39,26 @@ export function useRejectDeposit() {
     },
   })
 }
+
+export function useMemberDeposits() {
+  return useQuery({
+    queryKey: [...QUERY_KEYS.deposits.all, "member-list"],
+    queryFn: () => depositService.getMemberDeposits(),
+  })
+}
+
+export function useSubmitDeposit() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (formData: FormData) => depositService.submitDeposit(formData),
+    onSuccess: () => {
+      toast.success("Deposit submitted successfully for review!")
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.deposits.all })
+    },
+    onError: (error: any) => {
+      const msg = error?.error || error?.message || "Failed to submit deposit"
+      toast.error(msg)
+    },
+  })
+}
+

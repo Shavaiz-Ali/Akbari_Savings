@@ -37,6 +37,22 @@ export class DepositService {
     return apiFetch(`/api/admin/deposits?${query.toString()}`)
   }
 
+  async getMemberDeposits() {
+    return apiFetch("/api/deposits")
+  }
+
+  async submitDeposit(formData: FormData) {
+    const res = await fetch("/api/deposits", {
+      method: "POST",
+      body: formData,
+    })
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}))
+      throw err
+    }
+    return res.json()
+  }
+
   async approveDeposit(id: string, note?: string) {
     return apiFetch(`/api/admin/deposits/${id}/approve`, {
       method: "POST",
@@ -53,3 +69,4 @@ export class DepositService {
 }
 
 export const depositService = new DepositService()
+

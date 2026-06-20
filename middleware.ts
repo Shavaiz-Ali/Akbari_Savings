@@ -47,9 +47,9 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // ── Member routes → require member role ──
+  // ── Member routes → require member or admin role ──
   if (pathname.startsWith("/member")) {
-    if (token.role !== "member") {
+    if (token.role !== "member" && token.role !== "admin") {
       const dashboardUrl = new URL(getDashboardForRole(token.role), req.url)
       return NextResponse.redirect(dashboardUrl)
     }

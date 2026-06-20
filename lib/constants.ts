@@ -19,3 +19,5 @@ export const ACTIONS = {
 } as const;
 
 export type Action = (typeof ACTIONS)[keyof typeof ACTIONS];
+
+export const DEFAULT_MONTHLY_TARGET: number = 500

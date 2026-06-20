@@ -5,62 +5,11 @@ import {
   Wallet,
   Landmark,
   Settings,
+  Coins,
 } from "lucide-react"
 
-export interface NavItem {
-  label: string
-  href: string
-  icon: string // We'll store icon name or component
-  badge?: string
-}
-
-export const adminNavItems = [
-  {
-    label: "Dashboard",
-    href: "/admin/dashboard",
-    icon: "LayoutDashboard",
-  },
-  {
-    label: "Members",
-    href: "/admin/members",
-    icon: "Users",
-  },
-  {
-    label: "Deposits",
-    href: "/admin/deposits",
-    icon: "Wallet",
-  },
-  {
-    label: "Loans",
-    href: "/admin/loans",
-    icon: "Landmark",
-    badge: "Soon",
-  },
-  {
-    label: "Settings",
-    href: "/admin/settings",
-    icon: "Settings",
-  },
-]
-
-export const memberNavItems = [
-  {
-    label: "Dashboard",
-    href: "/member/dashboard",
-    icon: "LayoutDashboard",
-  },
-  {
-    label: "My Deposits",
-    href: "/member/deposits",
-    icon: "Wallet",
-  },
-  {
-    label: "Apply for Loan",
-    href: "/member/loans",
-    icon: "Landmark",
-    badge: "Soon",
-  },
-]
+export { adminNavItems, memberNavItems } from "./nav-config"
+export type { NavItem } from "./nav-config"
 
 export const getPageTitle = (path: string) => {
   // Admin routes
@@ -73,6 +22,7 @@ export const getPageTitle = (path: string) => {
   // Member routes
   if (path.startsWith("/member/dashboard")) return "My Portfolio"
   if (path.startsWith("/member/deposits")) return "My Deposits"
+  if (path.startsWith("/member/deposit")) return "Submit Deposit"
   if (path.startsWith("/member/loans")) return "My Loans"
   
   // Default
@@ -89,8 +39,10 @@ export const getIconComponent = (name: string) => {
     case "LayoutDashboard": return LayoutDashboard
     case "Users": return Users
     case "Wallet": return Wallet
+    case "Coins": return Coins
     case "Landmark": return Landmark
     case "Settings": return Settings
     default: return LayoutDashboard
   }
 }
+

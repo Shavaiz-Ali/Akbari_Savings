@@ -1,4 +1,6 @@
 import mongoose from 'mongoose'
+import dns from 'dns'
+dns.setDefaultResultOrder('ipv4first')
 
 let cached = (global as any).mongoose as {
     conn: typeof mongoose | null
