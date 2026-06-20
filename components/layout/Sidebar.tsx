@@ -30,15 +30,11 @@ interface SidebarProps {
   children: React.ReactNode
 }
 
-export function Sidebar({ navItems, role, children }: SidebarProps) {
-  const pathname = usePathname()
+function DepositDialogSync() {
   const searchParams = useSearchParams()
+  const pathname = usePathname()
   const router = useRouter()
-  const { data: session } = useSession()
-  const [mobileOpen, setMobileOpen] = React.useState(false)
 
-  const userName = session?.user?.name || "User"
-  
   const showDepositDialog = searchParams.get("deposit") === "true"
 
   const handleCloseDepositDialog = (open: boolean) => {
@@ -49,6 +45,19 @@ export function Sidebar({ navItems, role, children }: SidebarProps) {
       router.replace(`${pathname}${query}`)
     }
   }
+
+  return (
+    <SubmitDepositDialog open={showDepositDialog} onOpenChange={handleCloseDepositDialog} />
+  )
+}
+
+export function Sidebar({ navItems, role, children }: SidebarProps) {
+  const pathname = usePathname()
+  const router = useRouter()
+  const { data: session } = useSession()
+  const [mobileOpen, setMobileOpen] = React.useState(false)
+
+  const userName = session?.user?.name || "User"
 
   const sidebarContent = (
     <div className="flex flex-col h-full">
@@ -156,7 +165,9 @@ export function Sidebar({ navItems, role, children }: SidebarProps) {
         </div>
       </main>
 
-      <SubmitDepositDialog open={showDepositDialog} onOpenChange={handleCloseDepositDialog} />
+      <React.Suspense fallback={null}>
+        <DepositDialogSync />
+      </React.Suspense>
     </div>
   )
 }

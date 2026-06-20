@@ -6,6 +6,8 @@ import { connectDB } from "@/lib/mongodb"
 import User from "@/models/user"
 import { MemberDashboardClient } from "@/components/member/dashboard/MemberDashboardClient"
 
+export const dynamic = "force-dynamic"
+
 export const metadata: Metadata = {
   title: "Dashboard | Akbari Savings",
   description: "View your savings summary and account activity.",
